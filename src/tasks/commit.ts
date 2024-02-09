@@ -1,12 +1,12 @@
 import { Bytes, Checksum256, Name, PrivateKey, Serializer, UInt64 } from '@wharfkit/antelope';
 import { logger } from '../lib/logger';
-import { dropsContract, oracleContract, session } from '../lib/wharf';
+import { epochContract, session } from '../lib/wharf';
 import { db } from '..';
 
 export async function epochCommit() {
 	logger.debug('Determining if a commit must be submitted for the Epoch.');
 
-	const epochs = await oracleContract
+	const epochs = await epochContract
 		.table('epoch')
 		.query({
 			from: UInt64.from(0),
@@ -26,7 +26,7 @@ export async function epochCommit() {
 	logger.debug('active epochs involved in', Serializer.objectify(epochsInvolvedIn));
 
 	for (const epoch of epochsInvolvedIn) {
-		const existingCommits = await oracleContract
+		const existingCommits = await epochContract
 			.table('commit')
 			.query({
 				from: epoch.epoch,
@@ -40,7 +40,7 @@ export async function epochCommit() {
 		logger.debug('Has this oracle committed?', { hasCommitted });
 		if (!hasCommitted) {
 			const commitValue = generateCommitValue(Number(epoch.epoch));
-			const action = oracleContract.action('commit', {
+			const action = epochContract.action('commit', {
 				epoch: epoch.epoch,
 				oracle: session.actor,
 				commit: commitValue

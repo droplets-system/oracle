@@ -1,25 +1,15 @@
 import { ToadScheduler, SimpleIntervalJob, Task, AsyncTask } from 'toad-scheduler';
-import { epochAdvance } from './tasks/advance';
 import { epochCommit } from './tasks/commit';
 import { logger } from './lib/logger';
 
 import { Database } from 'bun:sqlite';
 import { epochReveal } from './tasks/reveal';
 
-export const db = new Database('drops.sqlite');
+export const db = new Database(`epoch.${process.env.ACCOUNT_NAME}.sqlite`);
 const scheduler = new ToadScheduler();
 
 function main() {
 	logger.info('Starting drops oracle service');
-
-	// Service to help advance the epoch
-	const epochAdvancer = new AsyncTask('epoch-advancer', epochAdvance);
-	const epochAdvancerJob = new SimpleIntervalJob(
-		// { minutes: 1, runImmediately: true },
-		{ seconds: 3, runImmediately: true },
-		epochAdvancer
-	);
-	scheduler.addSimpleIntervalJob(epochAdvancerJob);
 
 	// Create and submit commit values for each epoch
 	const epochCommitter = new AsyncTask('epoch-commit', epochCommit);
