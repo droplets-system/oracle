@@ -1,6 +1,6 @@
-import { Bytes, Checksum256, PrivateKey, Serializer, UInt64 } from '@wharfkit/antelope';
+import { Serializer, UInt64 } from '@wharfkit/antelope';
 import { logger } from '../lib/logger';
-import { dropsContract, epochContract, session } from '../lib/wharf';
+import { epochContract, session } from '../lib/wharf';
 import { db } from '..';
 
 export async function epochReveal() {
@@ -31,7 +31,7 @@ export async function epochReveal() {
 		.all();
 
 	if (!commits.length) {
-		logger.error('Oracle has never committed data.');
+		logger.error('Oracle has no commits needing revealed.');
 		return;
 	}
 

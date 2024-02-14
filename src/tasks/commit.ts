@@ -1,4 +1,4 @@
-import { Bytes, Checksum256, Name, PrivateKey, Serializer, UInt64 } from '@wharfkit/antelope';
+import { Bytes, Checksum256, PrivateKey, Serializer } from '@wharfkit/antelope';
 import { logger } from '../lib/logger';
 import { epochContract, session } from '../lib/wharf';
 import { db } from '..';
