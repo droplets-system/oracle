@@ -5,7 +5,7 @@ import { logger } from './lib/logger';
 import { Database } from 'bun:sqlite';
 import { epochReveal } from './tasks/reveal';
 
-export const db = new Database(`epoch.${process.env.ACCOUNT_NAME}.sqlite`);
+export const db = new Database(`shared/epoch.${process.env.ACCOUNT_NAME}.sqlite`);
 const scheduler = new ToadScheduler();
 
 function main() {
