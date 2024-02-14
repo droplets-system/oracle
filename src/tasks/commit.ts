@@ -6,26 +6,20 @@ import { db } from '..';
 export async function epochCommit() {
 	logger.debug('Determining if a commit must be submitted for the Epoch.');
 
-	const epochs = await epochContract
-		.table('epoch')
-		.query({
-			from: UInt64.from(0),
-			to: UInt64.from(0),
-			index_position: 'secondary'
-		})
-		.all();
-
+	const epochs = await epochContract.table('epoch').all();
 	if (!epochs.length) {
 		logger.error('No epochs found to process.');
 		return;
 	}
 
-	const epochsInvolvedIn = epochs.filter((epoch) =>
-		Serializer.objectify(epoch).oracles.includes(String(session.actor))
-	);
-	logger.debug('active epochs involved in', Serializer.objectify(epochsInvolvedIn));
+	const activeEpochsInvolvedIn = epochs
+		.filter((epoch) =>
+			epoch.seed.equals('0000000000000000000000000000000000000000000000000000000000000000')
+		)
+		.filter((epoch) => Serializer.objectify(epoch).oracles.includes(String(session.actor)));
+	logger.debug('active epochs involved in', Serializer.objectify(activeEpochsInvolvedIn));
 
-	for (const epoch of epochsInvolvedIn) {
+	for (const epoch of activeEpochsInvolvedIn) {
 		const existingCommits = await epochContract
 			.table('commit')
 			.query({
