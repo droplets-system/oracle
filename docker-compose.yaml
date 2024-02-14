@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./shared:/usr/src/app/shared
