@@ -31,7 +31,7 @@ export async function epochReveal() {
 		.all();
 
 	if (!commits.length) {
-		logger.error('Oracle has no commits needing revealed.');
+		logger.info('Oracle has no commits needing revealed.');
 		return;
 	}
 
