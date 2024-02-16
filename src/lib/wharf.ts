@@ -20,14 +20,14 @@ if (!process.env.PRIVATE_KEY) {
 }
 const walletPlugin = new WalletPluginPrivateKey(process.env.PRIVATE_KEY);
 
-export const url = process.env.API_ENDPOINT || 'https://jungle4.greymass.com';
-export const client = new APIClient({ url });
+export const chain = process.env.CHAIN_NAME ? Chains[process.env.CHAIN_NAME] : Chains.Jungle4;
+export const client = new APIClient({ url: chain.url });
 
 export const dropsContract: DropContract = new DropContract({ client });
 export const epochContract: EpochContract = new EpochContract({ client });
 
 export const session: Session = new Session({
-	chain: Chains.Jungle4,
+	chain,
 	walletPlugin,
 	actor: process.env.ACCOUNT_NAME,
 	permission: process.env.PERMISSION_LEVEL
