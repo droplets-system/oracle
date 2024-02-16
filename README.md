@@ -7,6 +7,7 @@ An oracle script for the epoch.drops service related to Drops.
 Create an `.env` file in the root folder containing:
 
 ```
+CHAIN_NAME=EOS
 ACCOUNT_NAME=oracle1.gm
 PERMISSION_LEVEL=active
 PRIVATE_KEY=5PRIVATKEY
