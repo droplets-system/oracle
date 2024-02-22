@@ -45,6 +45,16 @@ docker-compose down
 
 #### Run with bun:
 
+Install Bun:
+```
+sudo apt install unzip
+curl -fsSL https://bun.sh/install | bash
+```
+Install Toad Schedular:
+```
+npm i toad-scheduler
+```
+Run the script:
 ```
 bun run src/index.ts
 ```
