@@ -1,0 +1,10 @@
+name: create-release
+jobs:
+  my-job:
+    name: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
