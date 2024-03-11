@@ -11,3 +11,4 @@ vite.config.ts.timestamp-*
 error.log
 *.sqlite
 dist
+/epoch-oracle
