@@ -1,4 +1,8 @@
 name: create-release
+on:
+  push:
+    branches:
+      - 'master'
 jobs:
   my-job:
     name: create-release
