@@ -12,3 +12,10 @@ jobs:
       - uses: oven-sh/setup-bun@v1
       - run: yarn install --frozen-lockfile
       - run: yarn build
+      - uses: 'marvinpinto/action-automatic-releases@latest'
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          automatic_release_tag: 'latest'
+          title: 'Droplets Oracle'
+          files: |
+            epoch-oracle
