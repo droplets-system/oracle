@@ -5,43 +5,46 @@ import { db } from '..';
 
 export async function epochCommit() {
 	logger.debug('Determining if a commit must be submitted for the Epoch.');
-
-	const epochs = await epochContract.table('epoch').all();
-	if (!epochs.length) {
-		logger.error('No epochs found to process.');
-		return;
-	}
-
-	const activeEpochsInvolvedIn = epochs
-		.filter((epoch) =>
-			epoch.seed.equals('0000000000000000000000000000000000000000000000000000000000000000')
-		)
-		.filter((epoch) => Serializer.objectify(epoch).oracles.includes(String(session.actor)));
-	logger.debug('active epochs involved in', Serializer.objectify(activeEpochsInvolvedIn));
-
-	for (const epoch of activeEpochsInvolvedIn) {
-		const existingCommits = await epochContract
-			.table('commit')
-			.query({
-				from: epoch.epoch,
-				to: epoch.epoch,
-				index_position: 'secondary',
-				key_type: 'i64'
-			})
-			.all();
-
-		const hasCommitted = !!existingCommits.find((row) => row.oracle.equals(session.actor));
-		logger.debug('Has this oracle committed?', { hasCommitted });
-		if (!hasCommitted) {
-			const commitValue = generateCommitValue(Number(epoch.epoch));
-			const action = epochContract.action('commit', {
-				epoch: epoch.epoch,
-				oracle: session.actor,
-				commit: commitValue
-			});
-			session.transact({ action });
-			logger.info(`Committed secret for Epoch ${epoch.epoch}.`);
+	try {
+		const epochs = await epochContract.table('epoch').all();
+		if (!epochs.length) {
+			logger.error('No epochs found to process.');
+			return;
 		}
+
+		const activeEpochsInvolvedIn = epochs
+			.filter((epoch) =>
+				epoch.seed.equals('0000000000000000000000000000000000000000000000000000000000000000')
+			)
+			.filter((epoch) => Serializer.objectify(epoch).oracles.includes(String(session.actor)));
+		logger.debug('active epochs involved in', Serializer.objectify(activeEpochsInvolvedIn));
+
+		for (const epoch of activeEpochsInvolvedIn) {
+			const existingCommits = await epochContract
+				.table('commit')
+				.query({
+					from: epoch.epoch,
+					to: epoch.epoch,
+					index_position: 'secondary',
+					key_type: 'i64'
+				})
+				.all();
+
+			const hasCommitted = !!existingCommits.find((row) => row.oracle.equals(session.actor));
+			logger.debug('Has this oracle committed?', { hasCommitted });
+			if (!hasCommitted) {
+				const commitValue = generateCommitValue(Number(epoch.epoch));
+				const action = epochContract.action('commit', {
+					epoch: epoch.epoch,
+					oracle: session.actor,
+					commit: commitValue
+				});
+				session.transact({ action });
+				logger.info(`Committed secret for Epoch ${epoch.epoch}.`);
+			}
+		}
+	} catch (error) {
+		logger.error('Error in epochCommit:', error);
 	}
 }
 
