@@ -12,7 +12,7 @@ function main() {
 	logger.info('Starting drops oracle service');
 
 	// Create and submit commit values for each epoch
-	const epochCommitter = new AsyncTask('epoch-commit', epochCommit);
+	const epochCommitter = new AsyncTask('epoch-commit', epochCommit, (error) => logger.error(error));
 	const epochCommitterJob = new SimpleIntervalJob(
 		// { minutes: 30, runImmediately: true },
 		{ seconds: 10, runImmediately: true },
@@ -21,7 +21,7 @@ function main() {
 	scheduler.addSimpleIntervalJob(epochCommitterJob);
 
 	// Submit reveal values for each epoch
-	const epochRevealer = new AsyncTask('epoch-reveal', epochReveal);
+	const epochRevealer = new AsyncTask('epoch-reveal', epochReveal, (error) => logger.error(error));
 	const epochRevealerJob = new SimpleIntervalJob(
 		// { minutes: 30, runImmediately: true },
 		{ seconds: 10, runImmediately: true },
