@@ -59,7 +59,9 @@ export async function epochReveal() {
 							oracle: session.actor,
 							reveal: value
 						});
-						session.transact({ action });
+						session.transact({ action }).catch((error) => {
+							logger.error('Error submitting commit action:', error);
+						});
 						logger.info(`Revealed secret for Epoch ${commit.epoch}.`);
 					}
 				}

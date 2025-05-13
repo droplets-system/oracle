@@ -39,7 +39,9 @@ export async function epochCommit() {
 					oracle: session.actor,
 					commit: commitValue
 				});
-				session.transact({ action });
+				session.transact({ action }).catch((error) => {
+					logger.error('Error submitting commit action:', error);
+				});
 				logger.info(`Committed secret for Epoch ${epoch.epoch}.`);
 			}
 		}
